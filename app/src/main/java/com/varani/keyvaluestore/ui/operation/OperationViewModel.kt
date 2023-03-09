@@ -115,6 +115,13 @@ class OperationViewModel @Inject constructor(
         }
     }
 
+    fun onValueChanged(value: String) {
+        _inputStateUi.value?.let {
+            _inputStateUi.value = it.copy(value = value)
+            isSubmitButtonEnabled = shouldSubmitButtonBeEnabled()
+        }
+    }
+
     private fun shouldSubmitButtonBeEnabled(): Boolean {
         val command = _inputStateUi.value!!
         return when (command.operation) {
@@ -123,12 +130,6 @@ class OperationViewModel @Inject constructor(
             Operation.DELETE -> command.key.isNotEmpty()
             Operation.COUNT -> command.value.isNotEmpty()
             else -> true
-        }
-    }
-
-    fun onValueChanged(value: String) {
-        _inputStateUi.value?.let {
-            _inputStateUi.value = it.copy(value = value)
         }
     }
 
