@@ -31,7 +31,7 @@ class CacheRepository @Inject constructor(
     }
 
     override fun commitTransaction() {
-        stack.add(Transaction(stack.last.map))
+        stack.removeLast()
     }
 
     override fun rollbackLastTransaction() {
