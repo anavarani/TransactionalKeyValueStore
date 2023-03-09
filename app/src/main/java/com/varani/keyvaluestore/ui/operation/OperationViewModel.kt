@@ -35,32 +35,46 @@ class OperationViewModel @Inject constructor(
     var commandsList = mutableStateListOf<Command>()
     var messageStateUi by mutableStateOf("")
     var stackStateUi by mutableStateOf("")
+    var showDialog by mutableStateOf(false)
 
     init {
         _inputStateUi.value = Command()
+        showDialog = false
     }
 
     fun onSubmit() {
         _inputStateUi.value?.let { command ->
-
             if (isCommandValid(command)) {
-
-                when (command.operation) {
-                    Operation.GET -> handleGetCommand(command.key)
-                    Operation.SET -> handleSetCommand(command.key, command.value)
-                    Operation.DELETE -> handleDeleteCommand(command.key)
-                    Operation.COUNT -> handleCountCommand(command.value)
-                    Operation.BEGIN -> handleBeginCommand()
-                    Operation.COMMIT -> handleCommitCommand()
-                    Operation.ROLLBACK -> handleRollbackCommand()
+                if (command.operation in listOf(
+                        Operation.DELETE,
+                        Operation.COMMIT,
+                        Operation.ROLLBACK
+                    )
+                ) {
+                    showDialog = true
+                } else {
+                    submitCommand(command)
                 }
-
-                updateCommandList(command)
-                stackStateUi = getStackUseCase.invoke()
             } else {
                 messageStateUi = "invalid command"
             }
         }
+    }
+
+    private fun submitCommand(command: Command) {
+        when (command.operation) {
+            Operation.GET -> handleGetCommand(command.key)
+            Operation.SET -> handleSetCommand(command.key, command.value)
+            Operation.DELETE -> handleDeleteCommand(command.key)
+            Operation.COUNT -> handleCountCommand(command.value)
+            Operation.BEGIN -> handleBeginCommand()
+            Operation.COMMIT -> handleCommitCommand()
+            Operation.ROLLBACK -> handleRollbackCommand()
+        }
+
+        updateCommandList(command)
+        stackStateUi = getStackUseCase.invoke()
+
     }
 
     private fun isCommandValid(command: Command): Boolean {
@@ -110,6 +124,17 @@ class OperationViewModel @Inject constructor(
 
     private fun updateCommandList(command: Command) {
         commandsList.add(command)
+    }
+
+    fun onDialogConfirm() {
+        showDialog = false
+        _inputStateUi.value?.let { command ->
+            submitCommand(command)
+        }
+    }
+
+    fun onDialogDismiss() {
+        showDialog = false
     }
 
     fun onOperationSelected(operation: Operation) {

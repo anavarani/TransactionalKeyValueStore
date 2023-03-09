@@ -35,11 +35,11 @@ class CacheRepository @Inject constructor(
         } else {
             hashMapOf()
         }
-        stack.add(Transaction(branchNewTransaction))
+        stack.addLast(Transaction(branchNewTransaction))
     }
 
     override fun commitTransaction() {
-        stack.removeLast()
+        stack.addLast(Transaction(stack.last.map))
     }
 
     override fun rollbackLastTransaction() {
@@ -49,7 +49,7 @@ class CacheRepository @Inject constructor(
     override fun startNewSession() {
         stack.clear()
         val newTransactionMap = hashMapOf<String, String>()
-        stack.add(Transaction(newTransactionMap))
+        stack.addLast(Transaction(newTransactionMap))
     }
 }
 

@@ -18,13 +18,13 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.varani.keyvaluestore.model.Command
 import com.varani.keyvaluestore.model.Operation
 import com.varani.keyvaluestore.ui.component.CustomExposedDropdownMenuBox
+import com.varani.keyvaluestore.ui.component.SimpleAlertDialog
 import com.varani.keyvaluestore.ui.theme.KeyValueStoreTheme
 
 @Composable
 fun OperationScreen(
     modifier: Modifier = Modifier,
 ) {
-
     Column(modifier) {
         CommandsSection(
             modifier = Modifier
@@ -221,6 +221,9 @@ fun InputSection(
                 )
             }
         }
+    }
+    if (viewModel.showDialog) {
+        SimpleAlertDialog()
     }
 }
 
