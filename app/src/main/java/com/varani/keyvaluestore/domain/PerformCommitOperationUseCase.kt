@@ -15,10 +15,10 @@ class PerformCommitOperationUseCase @Inject constructor(
             repository.stack.last().map.forEach { (key, value) ->
                 repository.stack.getOrNull(count - 2)?.map?.set(key, value)
             }
+            repository.commitTransaction()
             OperationResult.Success(Unit)
         } else {
             OperationResult.Error(OperationError.NoTransaction)
         }
-        repository.commitTransaction()
     }
 }

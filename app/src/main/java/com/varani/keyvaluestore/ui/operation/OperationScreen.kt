@@ -175,8 +175,9 @@ fun InputSection(
         }
 
         Row(
-            modifier = modifier.fillMaxSize(),
-            verticalAlignment = Alignment.CenterVertically
+            modifier = modifier
+                .fillMaxSize()
+                .padding(top = 20.dp),
         ) {
             Button(
                 modifier = Modifier.weight(1f),
@@ -197,7 +198,7 @@ fun InputSection(
                 )
 
             }
-            Spacer(modifier = Modifier.width(80.dp))
+            Spacer(modifier = Modifier.width(60.dp))
             Button(
                 modifier = Modifier.weight(1f),
                 onClick = {

@@ -23,10 +23,18 @@ class CacheRepository @Inject constructor(
     }
 
     override fun countValues(value: String): Int =
-        Collections.frequency(stack.last.map.values, value)
+        if (stack.isNotEmpty()) {
+            Collections.frequency(stack.last.map.values, value)
+        } else {
+            0
+        }
 
     override fun beginNewTransaction() {
-        val branchNewTransaction = stack.last.map.toMutableMap()
+        val branchNewTransaction = if (stack.isNotEmpty()) {
+            stack.last.map.toMutableMap()
+        } else {
+            hashMapOf()
+        }
         stack.add(Transaction(branchNewTransaction))
     }
 

@@ -7,14 +7,12 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import com.varani.keyvaluestore.data.KeyValueStoreRepository
 import com.varani.keyvaluestore.domain.*
 import com.varani.keyvaluestore.domain.model.OperationResult
 import com.varani.keyvaluestore.model.Command
 import com.varani.keyvaluestore.model.Operation
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
@@ -43,26 +41,24 @@ class OperationViewModel @Inject constructor(
     }
 
     fun onSubmit() {
-        viewModelScope.launch {
-            _inputStateUi.value?.let { command ->
+        _inputStateUi.value?.let { command ->
 
-                if (isCommandValid(command)) {
+            if (isCommandValid(command)) {
 
-                    when (command.operation) {
-                        Operation.GET -> handleGetCommand(command.key)
-                        Operation.SET -> handleSetCommand(command.key, command.value)
-                        Operation.DELETE -> handleDeleteCommand(command.key)
-                        Operation.COUNT -> handleCountCommand(command.value)
-                        Operation.BEGIN -> handleBeginCommand()
-                        Operation.COMMIT -> handleCommitCommand()
-                        Operation.ROLLBACK -> handleRollbackCommand()
-                    }
-
-                    updateCommandList(command)
-                    stackStateUi = getStackUseCase.invoke()
-                } else {
-                    messageStateUi = "invalid command"
+                when (command.operation) {
+                    Operation.GET -> handleGetCommand(command.key)
+                    Operation.SET -> handleSetCommand(command.key, command.value)
+                    Operation.DELETE -> handleDeleteCommand(command.key)
+                    Operation.COUNT -> handleCountCommand(command.value)
+                    Operation.BEGIN -> handleBeginCommand()
+                    Operation.COMMIT -> handleCommitCommand()
+                    Operation.ROLLBACK -> handleRollbackCommand()
                 }
+
+                updateCommandList(command)
+                stackStateUi = getStackUseCase.invoke()
+            } else {
+                messageStateUi = "invalid command"
             }
         }
     }
@@ -118,6 +114,7 @@ class OperationViewModel @Inject constructor(
 
     fun onOperationSelected(operation: Operation) {
         _inputStateUi.value = Command(operation = operation)
+        messageStateUi = ""
     }
 
     fun onKeyChanged(key: String) {

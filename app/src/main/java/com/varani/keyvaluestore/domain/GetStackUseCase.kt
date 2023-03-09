@@ -7,12 +7,16 @@ class GetStackUseCase @Inject constructor(
     private val repository: KeyValueStoreRepository
 ) {
     operator fun invoke(): String {
-        val lastTransaction = repository.stack.last.map
+        return if (repository.stack.isNotEmpty()) {
+            val lastTransaction = repository.stack.last.map
 
-        val string = lastTransaction.entries.joinToString("\n") {
-            "${it.key} ${it.value}"
+            val string = lastTransaction.entries.joinToString("\n") {
+                "${it.key} ${it.value}"
+            }
+
+            string
+        } else {
+            ""
         }
-
-        return string
     }
 }
