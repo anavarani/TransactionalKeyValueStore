@@ -26,7 +26,10 @@ class PerformGetOperationUseCaseTest {
     @Test
     fun `verify that getValue was called`(): Unit = runBlocking {
         val key = "abc"
-        sut.invoke(key)
+        val value = "123"
+        `when`(mockCacheRepository.getValue(key)).thenReturn(value)
+        val output = sut.invoke(key)
+        assert(output is OperationResult.Success)
         verify(mockCacheRepository, times(1)).getValue(key)
     }
 
