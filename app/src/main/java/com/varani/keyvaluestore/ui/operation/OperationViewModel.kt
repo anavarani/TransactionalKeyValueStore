@@ -38,8 +38,6 @@ class OperationViewModel @Inject constructor(
     var messageStateUi by mutableStateOf("")
     var stackStateUi by mutableStateOf("")
 
-    var isSubmitButtonEnabled by mutableStateOf(false)
-
     init {
         _inputStateUi.value = Command()
     }
@@ -48,20 +46,34 @@ class OperationViewModel @Inject constructor(
         viewModelScope.launch {
             _inputStateUi.value?.let { command ->
 
-                updateCommandList(command)
+                if (isCommandValid(command)) {
 
-                when (command.operation) {
-                    Operation.GET -> handleGetCommand(command.key)
-                    Operation.SET -> handleSetCommand(command.key, command.value)
-                    Operation.DELETE -> handleDeleteCommand(command.key)
-                    Operation.COUNT -> handleCountCommand(command.value)
-                    Operation.BEGIN -> handleBeginCommand()
-                    Operation.COMMIT -> handleCommitCommand()
-                    Operation.ROLLBACK -> handleRollbackCommand()
+                    when (command.operation) {
+                        Operation.GET -> handleGetCommand(command.key)
+                        Operation.SET -> handleSetCommand(command.key, command.value)
+                        Operation.DELETE -> handleDeleteCommand(command.key)
+                        Operation.COUNT -> handleCountCommand(command.value)
+                        Operation.BEGIN -> handleBeginCommand()
+                        Operation.COMMIT -> handleCommitCommand()
+                        Operation.ROLLBACK -> handleRollbackCommand()
+                    }
+
+                    updateCommandList(command)
+                    stackStateUi = getStackUseCase.invoke()
+                } else {
+                    messageStateUi = "invalid command"
                 }
-
-                stackStateUi = getStackUseCase.invoke()
             }
+        }
+    }
+
+    private fun isCommandValid(command: Command): Boolean {
+        return when (command.operation) {
+            Operation.GET -> command.key.isNotEmpty()
+            Operation.SET -> command.key.isNotEmpty() && command.value.isNotEmpty()
+            Operation.COUNT -> command.value.isNotEmpty()
+            Operation.DELETE -> command.key.isNotEmpty()
+            else -> true
         }
     }
 
@@ -111,25 +123,12 @@ class OperationViewModel @Inject constructor(
     fun onKeyChanged(key: String) {
         _inputStateUi.value?.let {
             _inputStateUi.value = it.copy(key = key)
-            isSubmitButtonEnabled = shouldSubmitButtonBeEnabled()
         }
     }
 
     fun onValueChanged(value: String) {
         _inputStateUi.value?.let {
             _inputStateUi.value = it.copy(value = value)
-            isSubmitButtonEnabled = shouldSubmitButtonBeEnabled()
-        }
-    }
-
-    private fun shouldSubmitButtonBeEnabled(): Boolean {
-        val command = _inputStateUi.value!!
-        return when (command.operation) {
-            Operation.GET -> command.key.isNotEmpty()
-            Operation.SET -> command.key.isNotEmpty() && command.value.isNotEmpty()
-            Operation.DELETE -> command.key.isNotEmpty()
-            Operation.COUNT -> command.value.isNotEmpty()
-            else -> true
         }
     }
 

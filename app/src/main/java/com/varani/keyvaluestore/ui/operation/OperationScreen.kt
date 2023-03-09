@@ -18,7 +18,6 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.varani.keyvaluestore.model.Command
 import com.varani.keyvaluestore.model.Operation
 import com.varani.keyvaluestore.ui.component.CustomExposedDropdownMenuBox
-import com.varani.keyvaluestore.ui.theme.GreenGecko
 import com.varani.keyvaluestore.ui.theme.KeyValueStoreTheme
 
 @Composable
@@ -80,8 +79,8 @@ fun CommandsBox(
         ) {
             Text(
                 text = viewModel.commandsList.joinToString("\n"),
-                fontSize = 9.sp,
-                color = GreenGecko,
+                fontSize = 12.sp,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
                 lineHeight = 11.sp
             )
         }
@@ -100,8 +99,8 @@ fun StackBox(
         Column(modifier) {
             Text(
                 text = viewModel.stackStateUi,
-                fontSize = 9.sp,
-                color = GreenGecko,
+                fontSize = 12.sp,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
                 lineHeight = 11.sp
             )
         }
@@ -118,7 +117,7 @@ fun MessageSection(
     ) {
         Text(
             text = viewModel.messageStateUi,
-            fontSize = 14.sp,
+            fontSize = 16.sp,
             modifier = Modifier
                 .padding((8.dp))
         )
@@ -153,7 +152,11 @@ fun InputSection(
                 onValueChange = { viewModel.onKeyChanged(it) },
                 keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
                 maxLines = 1,
-                placeholder = { Text(text = "Key") }
+                label = { Text(text = "Key") },
+                colors = TextFieldDefaults.textFieldColors(
+                    focusedLabelColor = MaterialTheme.colorScheme.primary,
+                    unfocusedLabelColor = MaterialTheme.colorScheme.primary,
+                )
             )
         }
         if (inputStateUi.value.valueEnabled) {
@@ -163,7 +166,11 @@ fun InputSection(
                 onValueChange = { viewModel.onValueChanged(it) },
                 keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
                 maxLines = 1,
-                placeholder = { Text(text = "Value") }
+                label = { Text(text = "Value") },
+                colors = TextFieldDefaults.textFieldColors(
+                    focusedLabelColor = MaterialTheme.colorScheme.primary,
+                    unfocusedLabelColor = MaterialTheme.colorScheme.primary,
+                )
             )
         }
 
@@ -193,11 +200,13 @@ fun InputSection(
             Spacer(modifier = Modifier.width(80.dp))
             Button(
                 modifier = Modifier.weight(1f),
-                enabled = viewModel.isSubmitButtonEnabled,
                 onClick = {
                     viewModel.onSubmit()
                 },
-                colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.onBackground),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = MaterialTheme.colorScheme.onBackground,
+                    contentColor = MaterialTheme.colorScheme.background
+                ),
                 contentPadding = PaddingValues(
                     start = 20.dp,
                     top = 12.dp,

@@ -25,14 +25,19 @@ fun CustomExposedDropdownMenuBox(
             modifier = Modifier.menuAnchor(),
             readOnly = true,
             value = commandSelected.name,
-            onValueChange = { /*if (selectedOptionText.equals(Command.GET))*/ },
+            onValueChange = { },
             label = { Text("Commands") },
             trailingIcon = {
                 ExposedDropdownMenuDefaults.TrailingIcon(
                     expanded = expanded
                 )
             },
-            colors = ExposedDropdownMenuDefaults.textFieldColors()
+            colors = ExposedDropdownMenuDefaults.textFieldColors(
+                textColor = MaterialTheme.colorScheme.onTertiary,
+                placeholderColor = MaterialTheme.colorScheme.tertiary,
+                unfocusedLabelColor = MaterialTheme.colorScheme.primary,
+                focusedLabelColor = MaterialTheme.colorScheme.primary,
+            )
         )
         ExposedDropdownMenu(
             expanded = expanded,
@@ -47,7 +52,10 @@ fun CustomExposedDropdownMenuBox(
                         onCommandSelect(Operation.valueOf(selectionOption))
                     },
                     text = {
-                        Text(text = selectionOption)
+                        Text(
+                            text = selectionOption,
+                            color = MaterialTheme.colorScheme.onTertiary
+                        )
                     }
                 )
             }
