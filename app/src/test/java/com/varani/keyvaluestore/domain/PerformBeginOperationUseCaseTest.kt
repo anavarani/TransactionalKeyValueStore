@@ -1,7 +1,6 @@
 package com.varani.keyvaluestore.domain
 
 import com.varani.keyvaluestore.data.KeyValueStoreRepository
-import kotlinx.coroutines.runBlocking
 import org.junit.Before
 import org.junit.Test
 import org.mockito.Mock
@@ -18,12 +17,12 @@ class PerformBeginOperationUseCaseTest {
 
     @Before
     fun setUp() {
-        MockitoAnnotations.initMocks(this)
+        MockitoAnnotations.openMocks(this)
         sut = PerformBeginOperationUseCase(mockCacheRepository)
     }
 
     @Test
-    fun `Verify that beginNewTransaction was called`(): Unit = runBlocking {
+    fun `Verify that beginNewTransaction was called`() {
         sut.invoke()
         verify(mockCacheRepository, times(1)).beginNewTransaction()
     }

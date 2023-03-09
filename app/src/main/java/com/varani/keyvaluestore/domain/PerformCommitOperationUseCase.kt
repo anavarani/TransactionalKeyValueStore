@@ -8,10 +8,10 @@ import javax.inject.Inject
 class PerformCommitOperationUseCase @Inject constructor(
     private val repository: KeyValueStoreRepository
 ) {
-    operator fun invoke() {
+    operator fun invoke(): OperationResult<Unit> {
         val count = repository.stack.size
 
-        if (repository.stack.size > 1) {
+        return if (count > 1) {
             repository.stack.last().map.forEach { (key, value) ->
                 repository.stack.getOrNull(count - 2)?.map?.set(key, value)
             }

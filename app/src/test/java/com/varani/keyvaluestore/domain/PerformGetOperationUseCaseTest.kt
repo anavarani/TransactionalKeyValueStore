@@ -3,7 +3,6 @@ package com.varani.keyvaluestore.domain
 import com.varani.keyvaluestore.data.KeyValueStoreRepository
 import com.varani.keyvaluestore.domain.model.OperationError
 import com.varani.keyvaluestore.domain.model.OperationResult
-import kotlinx.coroutines.runBlocking
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
@@ -19,12 +18,12 @@ class PerformGetOperationUseCaseTest {
 
     @Before
     fun setUp() {
-        MockitoAnnotations.initMocks(this)
+        MockitoAnnotations.openMocks(this)
         sut = PerformGetOperationUseCase(mockCacheRepository)
     }
 
     @Test
-    fun `verify that getValue was called`(): Unit = runBlocking {
+    fun `verify that getValue was called`() {
         val key = "abc"
         val value = "123"
         `when`(mockCacheRepository.getValue(key)).thenReturn(value)
@@ -34,7 +33,7 @@ class PerformGetOperationUseCaseTest {
     }
 
     @Test
-    fun `when key is not found, return key is not set`(): Unit = runBlocking {
+    fun `when key is not found, return key is not set`() {
         val key = "abc"
         `when`(mockCacheRepository.getValue(key)).thenReturn("")
         val output = sut.invoke(key)
